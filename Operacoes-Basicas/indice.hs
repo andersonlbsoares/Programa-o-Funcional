@@ -1,8 +1,7 @@
 
-at' xs 0 = head xs
-at' (x:xs) n = at xs (n-1)
-
-
-at xs ind = at' xs ind2
-    where 
-        ind2 = mod ind $ length xs
+at indice (x:xs) = 
+    if indice == 0 then x 
+        else at (indice - 1) xs
+elemento indice xs = at indice2 xs
+        where len = length xs 
+              indice2 = if indice < 0 then indice + len else indice
