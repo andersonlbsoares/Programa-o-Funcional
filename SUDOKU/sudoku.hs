@@ -44,3 +44,7 @@ set xs index value = (take(index xs)) ++ [value] ++ (drop (index + 1) xs)
     -- xs <- getLine
     -- lim <- readLn :: IO Int
     -- putStrLn $ mainSolver xs lim
+© 2022 GitHub, Inc.
+Terms
+Privacy
+Sec
