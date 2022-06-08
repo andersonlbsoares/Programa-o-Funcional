@@ -25,7 +25,8 @@ getHoles xs = [ y | (x, y) <- zip xs [0..], x == '.']
 
 -- insere esse valor nesse index e retorna o novo vetor resultante
 set :: String -> Int -> Int -> String
-set xs index value = (take(index xs)) ++ [value] ++ (drop (index + 1) xs)
+set xs index value = (take index xs) ++ [dig2char value] ++ (drop (index + 1) xs)
+--segue abaixo a representação
 
 -- tenta resolver o problema para essa posição
 -- se é possível resolver, retorna Just resposta, senão Nothing
@@ -39,8 +40,35 @@ set xs index value = (take(index xs)) ++ [value] ++ (drop (index + 1) xs)
 -- mainSolver :: String -> Int -> String
 -- mainSolver xs lim = ...
 
--- main :: IO ()
--- main = do
-    -- xs <- getLine
-    -- lim <- readLn :: IO Int
-    -- putStrLn $ mainSolver xs lim
+
+-- functest xs lim pos = zip [0..] (foldl (\acc x -> acc ++ [fit (xs, lim) ((getHoles xs)!!pos) x]) [] [0..lim])
+-- resto xs lim pos = [fst x | x <- possiveis, snd x]
+--     where possiveis = funcaux xs lim pos
+
+
+
+
+
+solve :: (String, Int) -> [Int] -> Int -> Maybe String
+solve (xs, lim) holes holePosicao
+    | length holes          == holePosicao    = Just xs             --caso base, todos os holes foram preenchidos
+    | length restantes      == 0              = Nothing             --não há mais valores possíveis
+    | length selecionados   == 0              = Nothing  
+    | otherwise                               = head selecionados   --seleciona o primeiro valor válido
+    where
+        selecionados = [x | x <- variantes, isJust x] -- seleciona os valores válidos, me retorna uma lista de Maybe String, se não houver nenhum valor válido, retorna []
+        variantes    = [solve (set xs (holes!!holePosicao) r, lim) holes (holePosicao+1) | r <- restantes] --lista de todos os valores possíveis para o buraco, me retorna uma lista de Maybe String
+        restantes    = [fst x | x <- possiveis, snd x] -- me uma lista de valores possíveis 
+        possiveis    = zip [0..] (foldl (\acc x -> acc ++ [fit (xs, lim) (holes!!holePosicao) x]) [] [0..lim]) --lista de todos os valores possíveis para o buraco, me retorna uma lista de tuplas (valor, booleano)
+
+
+
+mainSolver :: String -> Int -> String
+mainSolver xs lim = fromJust $ solve (xs, lim) (getHoles xs) 0
+
+
+main :: IO ()
+main = do
+    xs <- getLine
+    lim <- readLn :: IO Int
+    putStrLn $ mainSolver xs lim
