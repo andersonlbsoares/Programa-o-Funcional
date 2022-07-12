@@ -1,0 +1,1 @@
+rev xs = read (reverse (show xs)) :: Int
